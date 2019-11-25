@@ -3,6 +3,7 @@ package application;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import mode.entities.Department;
 import mode.entities.Seller;
@@ -13,6 +14,8 @@ public class Program {
 
 	public static void main(String[] args) {
 
+		
+		Scanner sc = new Scanner(System.in);
 		SellerDao sellerDao =  DaoFactory.createSellerDao(); 
 		System.out.println("===Test 1 : Seller findById =====");
 		Seller seller = sellerDao.findById(3);
@@ -45,6 +48,16 @@ public class Program {
 		 seller.setName("Isaac Mendes");
 		 sellerDao.update(seller);
 		 System.out.println("Update completo");
+		 
+		 
+		 System.out.println("\n===Test 6 : Seller delit =====");
+		 System.out.println("Enter com id para deletar: ");
+		 int  id = sc.nextInt();
+		 sellerDao.deletById(id);
+		 System.out.println("Delete comleto");
+		 
+		 sc.close();
+		 
 	}
 
 }

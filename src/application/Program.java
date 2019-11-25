@@ -38,6 +38,13 @@ public class Program {
 				 new Date(), 4000.00, department);
 		 sellerDao.insert(newseller);
 		 System.out.println("Inserted! new id " + newseller.getId());
+		 
+		 System.out.println("\n===Test 5 : Seller update =====");
+			
+		 seller = sellerDao.findById(1);
+		 seller.setName("Isaac Mendes");
+		 sellerDao.update(seller);
+		 System.out.println("Update completo");
 	}
 
 }

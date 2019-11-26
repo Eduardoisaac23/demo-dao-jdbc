@@ -1,5 +1,6 @@
 package application;
 
+import java.util.List;
 import java.util.Scanner;
 
 import mode.entities.Department;
@@ -21,7 +22,7 @@ public class Program2 {
         
 		
 		
-        System.out.println("===Test 2 : Department delit =====");
+        System.out.println("===Test 2 : Department delet =====");
         System.out.println("Enter com id para deletar: ");
 		int  id = sc.nextInt();
 		departmentDao.deletById(id);
@@ -33,6 +34,21 @@ public class Program2 {
 		     System.out.println(department);
 		
 		
+		     
+	     System.out.println("\n===Test 4 : Seller update =====");
+				
+		 department = departmentDao.findById(1);
+		 department.setName("Musica");
+		 departmentDao.update(department);
+		 System.out.println("Update completo");    
+		 
+		 
+		 System.out.println("\n===Test 5 : Department findByAll =====");
+			List<Department> list = departmentDao.findAll();
+		for (Department d : list) {
+			System.out.println(d);
+		}
+		 
 	}
 
 }

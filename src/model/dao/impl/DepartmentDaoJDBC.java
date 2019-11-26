@@ -4,13 +4,17 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mysql.jdbc.PreparedStatement;
 
 import db.DB;
 import db.DbException;
 import mode.entities.Department;
+import mode.entities.Seller;
 import model.dao.DepartmentDao;
 
 public class DepartmentDaoJDBC implements DepartmentDao {
@@ -31,8 +35,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 					+ "VALUES " 
 					+ "(?)", 
 					Statement.RETURN_GENERATED_KEYS);
-			
-			
+
 			st.setString(1, obj.getName());
 
 			int rowsAffected = st.executeUpdate();
@@ -43,8 +46,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 				if (rs.next()) {
 					int id = rs.getInt(1);
 					obj.setId(id);
-				}
-				
+				}	
 			} else {
 				throw new DbException("Nenhuma linha foi alterada! ");
 			}
@@ -55,18 +57,29 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 			DB.closeStatement(st);
 
 		}
-
 	}
-
 	@Override
 	public void update(Department obj) {
-		
-
+		PreparedStatement st = null;
+		try{
+			st = (PreparedStatement) conn.prepareStatement(
+					"UPDATE department "
+					+ "SET name = ? "
+					+ "WHERE Id = ?");	
+			st.setString(1, obj.getName());
+			st.setInt(2,obj.getId());
+			
+			st.executeUpdate();
+		}catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+		}
 	}
 
 	@Override
 	public void deletById(Integer id) {
-PreparedStatement st = null;
+		PreparedStatement st = null;
 		
 		try {
 			st = (PreparedStatement) conn.prepareStatement("DELETE FROM department WHERE Id = ?");
@@ -78,7 +91,6 @@ PreparedStatement st = null;
 			DB.closeStatement(st);
 		}	
 	}
-
 	@Override
 	public Department findById(Integer id) {
 		PreparedStatement st = null;
@@ -102,13 +114,34 @@ PreparedStatement st = null;
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
 		}
-	
 	}
 
 	@Override
 	public List<Department> findAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = (PreparedStatement) conn.prepareStatement(
+					"SELECT * FROM department ORDER BY Name");
 
+			rs = st.executeQuery();
+			
+			List<Department> list = new ArrayList<Department>();
+			
+			while (rs.next()) {
+
+				Department obj = new Department();
+				obj.setId(rs.getInt("id"));
+				obj.setName(rs.getString("Name"));
+				list.add(obj);
+			}
+			return list;
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+	}
 }
